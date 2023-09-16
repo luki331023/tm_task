@@ -37,6 +37,10 @@ class TaskController extends AbstractController
             return new Response('Missing description parameter', Response::HTTP_BAD_REQUEST);
         }
 
+        if (strlen($request->query->get('description')) > 255) {
+            return new Response('Description length exceeded', Response::HTTP_BAD_REQUEST);
+        }
+
         $entity = $managerRegistry->getManager();
         $task = new Task();
         $task->setDescription($request->query->get('description'));
