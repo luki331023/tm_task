@@ -13,3 +13,8 @@ tasks:
     cmds:
       - cmd: docker compose exec -it --user application api bash
         ignore_error: true
+
+  enter-front:
+    cmds:
+      - cmd: docker compose exec -it frontend bash
+        ignore_error: true
