@@ -1,0 +1,33 @@
+version: '3.7'
+name: telemedi_task
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/dev/web/Dockerfile
+    working_dir: /app
+    environment:
+      PHP_DATE_TIMEZONE: Europe/Warsaw
+      PHP_MEMORY_LIMIT: 1024M
+      XDEBUG_MODE: debug
+      XDEBUG_CLIENT_HOST: host.docker.internal
+      XDEBUG_IDE_KEY: PHPSTORM
+      PHP_IDE_CONFIG: 'serverName=telemedi_task'
+    ports:
+      - "887:80"
+    volumes:
+      - ./:/app
+
+  db:
+    image: postgres:14-alpine
+    ports:
+      - "5437:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: passwd
+      POSTGRES_DB: telemedi_db
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+volumes:
+  db-data:
+
