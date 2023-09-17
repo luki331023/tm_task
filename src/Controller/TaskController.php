@@ -33,22 +33,24 @@ class TaskController extends AbstractController
     #[Route('/tasks', name: 'add_task', methods: ['POST'])]
     public function addTask(ManagerRegistry $managerRegistry, Request $request): Response
     {
-        if (!$request->query->has('description')) {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['description'])){
             return new Response('Missing description parameter', Response::HTTP_BAD_REQUEST);
         }
 
-        if (strlen($request->query->get('description')) > 255) {
+        if (strlen($data['description']) > 255) {
             return new Response('Description length exceeded', Response::HTTP_BAD_REQUEST);
         }
 
         $entity = $managerRegistry->getManager();
         $task = new Task();
-        $task->setDescription($request->query->get('description'));
+        $task->setDescription($data['description']);
         $task->setCompleted(false);
         $entity->persist($task);
         $entity->flush();
 
-        return new Response(sprintf('Task %s successfully created', $task->getId()), Response::HTTP_OK);
+        return $this->json($task, Response::HTTP_CREATED);
     }
 
     #[Route('/tasks/{id}', name: 'get_task', methods: ['DELETE'])]
